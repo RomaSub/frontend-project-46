@@ -19,5 +19,9 @@
   "bugs": {
     "url": "https://github.com/Roma1731/frontend-project-46/issues"
   },
-  "homepage": "https://github.com/Roma1731/frontend-project-46#readme"
+  "homepage": "https://github.com/Roma1731/frontend-project-46#readme",
+  "dependencies": {
+    "commander": "^10.0.0",
+    "lodash": "^4.17.21"
+  }
 }
