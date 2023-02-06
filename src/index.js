@@ -1,64 +1,45 @@
 import _ from 'lodash';
-import * as fs from 'node:fs';
-import path from 'node:path';
+import fs from 'fs';
+import path from 'path';
+//import * as fs from 'node:fs';
+//import path from 'node:path';
 
-// функция для отображения финальной строки
-const getString = (arr) => { 
-    const result = [];
-    arr.map((element) => {
-      switch (element.type) {
-        case 'added':
-          result.push(`  + ${element.name}: ${element.value}`);
-          break;
-        case 'deleted':
-          result.push(`  - ${element.name}: ${element.value}`);
-          break;
-        case 'changed':
-          result.push(`  - ${element.name}: ${element.deletedValue}`);
-          result.push(`  + ${element.name}: ${element.addedValue}`);
-          break;
-        default:
-          result.push(`    ${element.name}: ${element.value}`);
-      }
-      return result;
-    });
-    return (`{\n${result.push('\n')}\n}`);
+
+  const stringify = (value, replacer = ' ', spacesCount = 1) => {
+    const iter = (el, counter) => {
+      const arr = Object.entries(el).map(([key, val]) => {
+        if (typeof val === 'object' && val) return (`${replacer.repeat(counter)}${key}: ${iter(val, counter + spacesCount)}`);
+        return (`${replacer.repeat(counter)}${key}: ${val}`);
+      });
+      const result = arr.join('\n');
+      return counter === spacesCount ? `{\n${result}\n}` : `{\n${result}\n${replacer.repeat(counter - spacesCount)}}`;
+    };
+    return typeof value !== 'object' ? `${value}` : iter(value, spacesCount);
   };
-
-const genDiff = (filepath1, filepath2) => {
-// читаем файлы
-    const file1 = path.resolve(process.cwd(), filepath1);  
-    const file2 = path.resolve(process.cwd(), filepath2); 
-//парсим
-    const obj1 = JSON.parse(fs.readFileSync(file1));
-    const obj2 = JSON.parse(fs.readFileSync(file2));
-//формируем массив
-    const arr1 = Object.entries(obj1);
-    const arr2 = Object.entries(obj2);
-//объединяем массивы
-    const objects = _.union(arr1, arr2);
-//сортируем ключи 
-//uniqWith используется для удаления любых повторяющихся объектов из массива
-//isEqual используется для сравнения объектов в массиве, чтобы убедиться, что в отсортированном массиве нет дубликатов
-    const sorted = _.uniqWith(_.sortBy(objects), _.isEqual);
-    const result = [];
-//map используется для переборки отсортированного массива 
-//hasOwn используется для проверки того, обладает ли объект определенным свойством
-    sorted.map(([key, val]) => {
-        if (!Object.hasOwn(obj1, key)) {
-            result.push({ name: key, type: 'added', value: val });
-          } else if (!Object.hasOwn(obj2, key)) {
-            result.push({ name: key, type: 'deleted', value: val });
-          } else if (obj1[key] !== obj2[key]) {
-            result.push({
-              name: key, type: 'changed', deletedValue: obj1[key], addedValue: obj2[key],
-            });
-          } else {
-            result.push({ name: key, type: 'unchanged', value: val });
-          }
-          return result;
-        });
-        return getString(_.uniqWith(result, _.isEqual));
-      };
-
-export default genDiff;
+ 
+  const genDiff = (file1, file2) => {
+    const result = {};
+    //парсим файлы
+    const data1 = JSON.parse(fs.readFileSync(file1, 'utf8'));
+    const data2 = JSON.parse(fs.readFileSync(file2, 'utf8'));
+    //получаем ключи
+    const keys1 = Object.keys(data1);
+    const keys2 = Object.keys(data2);
+    //сортируем и объединяем
+    const sortedUnionKeys = _.sortBy(_.union(keys1, keys2), (k) => k);
+    //перебираем
+    sortedUnionKeys.forEach((key) => {
+      const value1 = data1[key];
+      const value2 = data2[key];
+      if (value1 === value2) result[`  ${key}`] = value1;
+      if (keys1.includes(key) && !keys2.includes(key)) result[`- ${key}`] = value1;
+      if (!keys1.includes(key) && keys2.includes(key)) result[`+ ${key}`] = value2;
+      if (keys1.includes(key) && keys2.includes(key) && value1 !== value2) {
+        result[`- ${key}`] = value1;
+        result[`+ ${key}`] = value2;
+      }
+    });
+    console.log(stringify(result));
+  };
+ 
+  export default genDiff;
