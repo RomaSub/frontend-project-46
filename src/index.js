@@ -1,8 +1,7 @@
 import _ from 'lodash';
 import fs from 'fs';
-// import path from 'path';
-// import * as fs from 'node:fs';
-// import path from 'node:path';
+import parse from './parsers.js';
+import path from 'path';
 
 const stringify = (value, replacer = ' ', spacesCount = 1) => {
   const iter = (el, counter) => {
@@ -19,8 +18,11 @@ const stringify = (value, replacer = ' ', spacesCount = 1) => {
 const genDiff = (file1, file2) => {
   const result = {};
   // парсим файлы
-  const data1 = JSON.parse(fs.readFileSync(file1, 'utf8'));
-  const data2 = JSON.parse(fs.readFileSync(file2, 'utf8'));
+  const data1 = parse(file1);
+  const data2 = parse(file2);
+
+  //const data1 = JSON.parse(fs.readFileSync(file1, 'utf8'));
+  //const data2 = JSON.parse(fs.readFileSync(file2, 'utf8'));
   // получаем ключи
   const keys1 = Object.keys(data1);
   const keys2 = Object.keys(data2);

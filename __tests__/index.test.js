@@ -19,4 +19,11 @@ describe('genDiff', () => {
 
     expect(genDiff(filepath1, filepath2)).toEqual(expectedResult);
   });
+
+  test('YML', () => {
+    const filepath1 = getFixturePath('file1.yml');
+    const filepath2 = getFixturePath('file2.yml');
+
+    expect(genDiff(filepath1, filepath2)).toEqual(expectedResult);
+  });
 });
