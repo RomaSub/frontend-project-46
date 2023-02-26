@@ -15,9 +15,14 @@ describe('genDiff', () => {
     const filepath2 = getFixturePath('file2.json');
     const filepath3 = getFixturePath('file3.yml');
     const filepath4 = getFixturePath('file4.yml');
-    const expectedResult1 = readFile('resultStylish.txt').trim();
 
-    expect(genDiff(filepath1, filepath2, 'stylish')).toEqual(expectedResult1);
-    expect(genDiff(filepath3, filepath4, 'stylish')).toEqual(expectedResult1);
+    const expectedResult = readFile('resultStylish.txt').trim();
+    const expectedResult1 = readFile('resultPlain.txt').trim();
+
+    expect(genDiff(filepath1, filepath2, 'stylish')).toEqual(expectedResult);
+    expect(genDiff(filepath3, filepath4, 'stylish')).toEqual(expectedResult);
+
+    expect(genDiff(filepath1, filepath2, 'plain')).toEqual(expectedResult1);
+    expect(genDiff(filepath3, filepath4, 'plain')).toEqual(expectedResult1);
   });
 });
