@@ -18,11 +18,15 @@ describe('genDiff', () => {
 
     const expectedResult = readFile('resultStylish.txt').trim();
     const expectedResult1 = readFile('resultPlain.txt').trim();
+    const expectedResult3 = readFile('resultJson.txt').trim();
 
     expect(genDiff(filepath1, filepath2, 'stylish')).toEqual(expectedResult);
     expect(genDiff(filepath3, filepath4, 'stylish')).toEqual(expectedResult);
 
     expect(genDiff(filepath1, filepath2, 'plain')).toEqual(expectedResult1);
     expect(genDiff(filepath3, filepath4, 'plain')).toEqual(expectedResult1);
+
+    expect(genDiff(filepath1, filepath2, 'json')).toEqual(expectedResult3);
+    expect(genDiff(filepath3, filepath4, 'json')).toEqual(expectedResult3);
   });
 });
