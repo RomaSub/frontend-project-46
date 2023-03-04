@@ -2,12 +2,12 @@ import { load } from 'js-yaml';
 
 const parse = (content, format) => {
   switch (format) {
-    case '.json':
+    case 'json':
       return JSON.parse(content);
-    case '.yml':
+    case 'yml':
       return load(content);
     default:
-      throw new Error(`Invalid format: ${format}`);
+      throw new Error(`Unknown format: ${format}`);
   }
 };
 
