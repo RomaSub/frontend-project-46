@@ -12,3 +12,5 @@ https://asciinema.org/a/xFrgNqzjHnfyfO56UrYZFC6PT
 https://asciinema.org/a/nzAWq0FjhWbYOjW0YgimvLqQF 
 https://asciinema.org/a/H3RfDIHqyFekTeSvyx9A9I1fs
 https://asciinema.org/a/LRV2EhDod3W3zUNDXR2W7CuQd
+
+тест
